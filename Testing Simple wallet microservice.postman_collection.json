@@ -1,0 +1,273 @@
+{
+	"info": {
+		"_postman_id": "5f9f1503-73c8-4c02-8ece-d4dcafd9ca42",
+		"name": "Testing Simple wallet microservice",
+		"description": "List of positive and negative tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create an account for test purpose",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"balance\" : 5000\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/account",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account"
+					]
+				},
+				"description": "adding Larsson"
+			},
+			"response": []
+		},
+		{
+			"name": "Do balance inquiry transaction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/balanceInquiry/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"balanceInquiry",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Debit transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\" : \"900\",\n    \"amount\" : 100,\n    \"transactionType\" : \"debit\",\n    \"accountId\" : 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/transaction",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "adding Larsson"
+			},
+			"response": []
+		},
+		{
+			"name": "Credit transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\" : \"900\",\n    \"amount\" : 100,\n    \"transactionType\" : \"credit\",\n    \"accountId\" : 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/transaction",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "adding Larsson"
+			},
+			"response": []
+		},
+		{
+			"name": "Tranasction history",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/balanceInquiry/12345",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"balanceInquiry",
+						"12345"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Balance inquiry with unregisted account id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/balanceInquiry/12345",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"balanceInquiry",
+						"12345"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Debit transaction with unavailble balance",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\" : \"1\",\n    \"amount\" : 100000,\n    \"transactionType\" : \"debit\",\n    \"accountId\" : 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/transaction",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "adding Larsson"
+			},
+			"response": []
+		},
+		{
+			"name": "Debit transaction with existing tranaction id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\" : \"11\",\n    \"amount\" : 100,\n    \"transactionType\" : \"debit\",\n    \"accountId\" : 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/transaction",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "adding Larsson"
+			},
+			"response": []
+		},
+		{
+			"name": "Credit transaction with existing transaction id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\" : \"900\",\n    \"amount\" : 100,\n    \"transactionType\" : \"credit\",\n    \"accountId\" : 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/transaction",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "adding Larsson"
+			},
+			"response": []
+		},
+		{
+			"name": "Tranasction history with unknown account id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/transactionHistory/12345",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transactionHistory",
+						"12345"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tranasction history with accoun it no transaction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/transactionHistory/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transactionHistory",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
