@@ -1,1 +1,1 @@
-# simple-wallet-microservice
+# Simple Wallet Microservice
