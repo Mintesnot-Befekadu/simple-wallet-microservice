@@ -6,14 +6,12 @@ import com.mintesnotbefekadu.simplewalletmicroservice.repository.AccountReposito
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.TransactionRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.*;
@@ -52,11 +50,19 @@ class WalletServiceTest {
         assertEquals(account.getBalance(),500.0);
     }
 
-    //TODO
     @Test
-    @Disabled
     @DisplayName("Save account unit Test when the account exist")
     void saveOrUpdateAccountTest() {
+        // given
+        long accountId = 1003;
+        double balance = 100.0;
+        Account account = new Account(accountId,balance);
+        //when
+        walletService.saveOrUpdateAccount(account);
+        //then
+        ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
+        verify(accountRepository).save(accountArgumentCaptor.capture());
+        assertThat(accountArgumentCaptor.getValue()).isEqualTo(account);
     }
 
     //TODO
