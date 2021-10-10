@@ -34,7 +34,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) {
         WalletExceptionResponse exceptionResponse = new WalletExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -48,7 +48,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleAccountNotFoundException(Exception ex, WebRequest request) {
         WalletExceptionResponse exceptionResponse = new WalletExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleTransactionIdNotUniqueException(Exception ex, WebRequest request) {
         WalletExceptionResponse exceptionResponse = new WalletExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.FORBIDDEN);
     }
 
     /**
@@ -76,7 +76,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleTransactionTypeInCorrectException(Exception ex, WebRequest request) {
         WalletExceptionResponse exceptionResponse = new WalletExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.FORBIDDEN);
     }
 
     /**
@@ -90,7 +90,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleBalanceNotAvaliableException(Exception ex, WebRequest request) {
         WalletExceptionResponse exceptionResponse = new WalletExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

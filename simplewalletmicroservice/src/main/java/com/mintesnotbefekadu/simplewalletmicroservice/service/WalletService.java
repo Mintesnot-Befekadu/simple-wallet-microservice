@@ -1,6 +1,9 @@
 package com.mintesnotbefekadu.simplewalletmicroservice.service;
 
-import com.mintesnotbefekadu.simplewalletmicroservice.exception.*;
+import com.mintesnotbefekadu.simplewalletmicroservice.exception.AccountNotFoundException;
+import com.mintesnotbefekadu.simplewalletmicroservice.exception.BalanceNotAvailableException;
+import com.mintesnotbefekadu.simplewalletmicroservice.exception.TransactionIdNotUniqueException;
+import com.mintesnotbefekadu.simplewalletmicroservice.exception.TransactionTypeInCorrectException;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.AccountRepository;
@@ -13,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * All this simple wallet microserive business logic is coded here
+ * All this simple wallet microservice business logic is coded here
  *
  * @author mintesnotbefekadu
  */
@@ -37,7 +40,9 @@ public class WalletService {
     }
 
     /**
-     * @param accountId The account id of the player
+     * Updating the account record for the specific account id with the new balance with Sanity check
+     *
+     * @param accountId  The account id of the player
      * @param newBalance The updated balance the new balance
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -81,7 +86,7 @@ public class WalletService {
     /**
      * Check available balance of the account
      *
-     * @param accountId The account id of the player
+     * @param accountId  The account id of the player
      * @param newBalance The updated balance the new balance
      * @return the status of the available balance for this specific account id
      */
@@ -91,13 +96,12 @@ public class WalletService {
 
     /**
      * This method do both debit and credit transaction as per the request data. If
-     * the requested data contains debit as transaction type the transaction will be
+     * the requested data contains debit as transaction type the transaction will
      * debit. And, if the requested data contains credit as transaction type it will
      * be credit transaction.
      *
      * @param transaction transaction object contains transaction id, account,
      *                    amount and type.
-     * @return The transaction if the all validation are approved.
      * @throws BalanceNotAvailableException      This balance not available
      *                                           exception will be thrown, if the
      *                                           account balance is less that the
@@ -112,28 +116,24 @@ public class WalletService {
      *                                           transaction type is not debit or
      *                                           credit.
      */
-    public Transaction makeTransaction(Transaction transaction)
+    public void makeTransaction(Transaction transaction)
             throws BalanceNotAvailableException, TransactionIdNotUniqueException, TransactionTypeInCorrectException {
 
         if (checkTransactionId(transaction.getTransactionId())) {
             throw new TransactionIdNotUniqueException("Transaction Id should be unique");
-        }
-
-        if (transaction.getTransactionType().equalsIgnoreCase("debit")) {
+        } else if (transaction.getTransactionType().equalsIgnoreCase("debit")) {
             if (checkAvailableBalance(transaction.getAccountId(), transaction.getAmount())) {
                 throw new BalanceNotAvailableException("Balance Not Available");
             }
             updateAccountBalance(transaction.getAccountId(),
                     getAccountBalance(transaction.getAccountId()) - transaction.getAmount());
-            return transactionRepository.save(transaction);
+            transactionRepository.save(transaction);
         } else if (transaction.getTransactionType().equalsIgnoreCase("credit")) {
             updateAccountBalance(transaction.getAccountId(),
                     getAccountBalance(transaction.getAccountId()) + transaction.getAmount());
-            return transactionRepository.save(transaction);
+            transactionRepository.save(transaction);
         } else {
             throw new TransactionTypeInCorrectException("Transaction type should be debit or credit");
         }
-
     }
-
 }

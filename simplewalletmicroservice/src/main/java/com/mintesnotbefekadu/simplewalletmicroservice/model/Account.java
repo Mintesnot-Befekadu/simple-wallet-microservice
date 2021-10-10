@@ -18,8 +18,8 @@ public class Account {
     @Column(name = "balance")
     private double balance;
 
-    public Account(double balance) {
-        super();
+    public Account(long playerAccountId, double balance) {
+        this.playerAccountId = playerAccountId;
         this.balance = balance;
     }
 

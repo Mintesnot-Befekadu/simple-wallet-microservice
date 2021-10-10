@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class WalletExceptionResponse {
 
-    private Date timeStamp;
-    private String message;
-    private String details;
+    private final Date timeStamp;
+    private final String message;
+    private final String details;
 
     public WalletExceptionResponse(Date timeStamp, String message, String details) {
         super();
