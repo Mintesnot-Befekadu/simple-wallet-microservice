@@ -43,7 +43,9 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 1.10.	Get Balance Test when the account is not found
 
 ## Out of scope
-1.	Security, authentication and authorization 
+1.	Security, authentication and authorization
+2.	currency
+3.	player entity (name and other details)
 
 ## API Endpoint
 Testing Simple wallet microservice.postman_collection.json
