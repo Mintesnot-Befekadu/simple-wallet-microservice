@@ -1,5 +1,6 @@
 # Simple Wallet Microservice
 A simple wallet microservice which do debit/credit, show balance and transaction history.
+![image](https://user-images.githubusercontent.com/37999811/136752765-42d5d39c-dc45-4c49-b078-d2cb5de31235.png)
  
 ## Assumed Requirement
 1.	Current balance per player account id
@@ -51,4 +52,3 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 Testing Simple wallet microservice.postman_collection.json
 
 * test are work in progress
-![image](https://user-images.githubusercontent.com/37999811/136751157-ef92f8d7-be06-46cf-95e1-96301a4164ff.png)
