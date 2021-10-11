@@ -12,6 +12,7 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 2.	Maven 4
 3.	Spring boot with starts test, web, and jpa dependency 
 4.	H2 db
+5.	Junit and Mockito
 
 ## Unit test
 
