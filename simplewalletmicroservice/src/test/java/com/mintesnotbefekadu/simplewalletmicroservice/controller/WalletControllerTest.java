@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WalletControllerTest {
 
@@ -63,17 +62,16 @@ class WalletControllerTest {
         assertEquals(INITIAL_BALANCE, actual);
     }
 
-    // TODO
     @Test
     @DisplayName("Get Balance Test when the account is not found")
     void getAccountBalance_accountNotFound() {
-
         long accountId = 1005;
-        try {
-            restTemplate.getForObject("/balanceInquiry/{accountId}", Double.class, accountId);
-        } catch (Exception exception) {
 
-        }
+        ResponseEntity<String> responseEntity =
+                restTemplate.getForEntity("/balanceInquiry/{accountId}", String.class, accountId);
+
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
+        assertTrue(responseEntity.getBody().contains("Account not found"));
     }
 
     @Test
@@ -83,14 +81,15 @@ class WalletControllerTest {
         Transactions transactions =
                 restTemplate.getForObject("/transactionHistory/{accountId}",
                         Transactions.class, ACCOUNT_ID_IN_DB);
+
         assertThat(json.write(transactions)).isEqualToJson("/expected.json");
     }
 
     @Test
     @DisplayName("Get Balance Test when the account is not found")
     void getTransactionHistory_accountNotFound() {
-
         long accountId = 1005;
+
         ResponseEntity<String> responseEntity =
                 restTemplate.getForEntity("/transactionHistory/" + accountId, String.class);
 
@@ -102,6 +101,7 @@ class WalletControllerTest {
     @DisplayName("Successful save account")
     void saveAccount() {
         Account account = new Account(1L, 0.0);
+
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity("/account", account, Long.class);
         // Auto Generated Id
         assertEquals(1, responseEntity.getBody());

@@ -42,11 +42,17 @@ class WalletServiceTest {
     @DisplayName("Update account balance unit Test when the account exist")
     void updateAccountBalanceTest() {
         long accountId = 1003;
-        double balance = 100.0;
-        Account account = new Account(accountId,balance);
-        //doNothing().when(accountRepository.findById(accountId).get().setBalance(balance)).equals(account.getBalance()));
-        walletService.updateAccountBalance(accountId,500.0);
-        assertEquals(account.getBalance(),500.0);
+        double newBalance = 100.0;
+
+        ArgumentCaptor<Long> accountIdCapture = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Double> newBalanceCapture = ArgumentCaptor.forClass(Double.class);
+        doNothing().when(accountRepository).
+                findById(accountIdCapture.capture()).get().setBalance(newBalanceCapture.capture());
+
+        walletService.updateAccountBalance(accountId,newBalance);
+
+        assertEquals(accountId, accountIdCapture.getValue());
+        assertEquals(newBalance, newBalanceCapture.getValue());
     }
 
     @Test
