@@ -37,7 +37,7 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 1.3.	Successful Get Balance Test 
 1.4.	Unsuccessful Transaction because of repeated transactionId 
 1.5.	Unsuccessful DEBIT Transaction because of not enough balance for credit 
-1.6.	Successful Get Transaction History Test *
+1.6.	Successful Get Transaction History Test
 1.7.	Get Balance Test when the account is not found 
 1.8.	Successful CREDIT Transaction 
 1.9.	Successful DEBIT Transaction
@@ -47,8 +47,9 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 1.	Security, authentication and authorization
 2.	currency
 3.	player entity (name and other details)
+4.	Performance and Database concurrency 
 
 ## API Endpoint
 Testing Simple wallet microservice.postman_collection.json
 
-* test are work in progress
+\* test are work in progress
