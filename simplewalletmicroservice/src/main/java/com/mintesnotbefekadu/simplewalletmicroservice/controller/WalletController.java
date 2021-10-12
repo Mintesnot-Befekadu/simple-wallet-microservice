@@ -2,6 +2,7 @@ package com.mintesnotbefekadu.simplewalletmicroservice.controller;
 
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
+import com.mintesnotbefekadu.simplewalletmicroservice.model.Transactions;
 import com.mintesnotbefekadu.simplewalletmicroservice.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * This class provide the API endpoint for balanceInquiry, transaction, and
  * transaction history. One additional API endpoint is providers only for test
- * purposes for this simple wallet micro service.
+ * purposes for this simple wallet microservice.
  *
  * @author mintesnotbefekadu
  */
@@ -40,9 +41,8 @@ public class WalletController {
      */
     @GetMapping("/transactionHistory/{accountId}")
     @ResponseBody
-    public ResponseEntity<List<Transaction>> getTransactionHistory(@PathVariable("accountId") Long accountId) {
-        List<Transaction> transactions = walletService.getTransactionHistory(accountId);
-        return new ResponseEntity<List<Transaction>>(transactions,HttpStatus.OK);
+    public Transactions getTransactionHistory(@PathVariable("accountId") Long accountId) {
+        return walletService.getTransactionHistory(accountId);
     }
 
     /**

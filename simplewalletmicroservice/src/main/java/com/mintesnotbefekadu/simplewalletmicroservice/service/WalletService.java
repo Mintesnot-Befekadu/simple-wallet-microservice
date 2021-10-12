@@ -6,14 +6,13 @@ import com.mintesnotbefekadu.simplewalletmicroservice.exception.TransactionIdNot
 import com.mintesnotbefekadu.simplewalletmicroservice.exception.TransactionTypeInCorrectException;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
+import com.mintesnotbefekadu.simplewalletmicroservice.model.Transactions;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.AccountRepository;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * All this simple wallet microservice business logic is coded here
@@ -65,9 +64,9 @@ public class WalletService {
      * @param accountId The account id of the player
      * @return transaction object which in turn will be response body
      */
-    public List<Transaction> getTransactionHistory(Long accountId) throws AccountNotFoundException {
+    public Transactions getTransactionHistory(Long accountId) throws AccountNotFoundException {
         if (accountRepository.existsById(accountId)) {
-            return transactionRepository.findByAccountId(accountId);
+            return new Transactions(transactionRepository.findByAccountId(accountId));
         } else {
             throw new AccountNotFoundException("Account not found");
         }

@@ -87,7 +87,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
      * @return ResponseEntity<Object>
      */
     @ExceptionHandler(BalanceNotAvailableException.class)
-    public final ResponseEntity<Object> handleBalanceNotAvaliableException(Exception ex, WebRequest request) {
+    public final ResponseEntity<Object> handleBalanceNotAvailableException(Exception ex, WebRequest request) {
         WalletExceptionResponse exceptionResponse = new WalletExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);

@@ -3,8 +3,11 @@ package com.mintesnotbefekadu.simplewalletmicroservice.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
+import com.mintesnotbefekadu.simplewalletmicroservice.model.Transactions;
 import org.junit.jupiter.api.*;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -13,18 +16,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-        "spring.datasource.url=jdbc:h2:file:./src/test/resources/testData",
-        "spring.jpa.hibernate.ddl-auto=create-drop"})
+//@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WalletControllerTest {
 
     private final long ACCOUNT_ID_IN_DB = 1001;
@@ -33,13 +35,13 @@ class WalletControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
-    private JacksonTester<List<Transaction>> json;
+    private JacksonTester<Transactions> json;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    ObjectMapper objectMapper;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -74,28 +76,14 @@ class WalletControllerTest {
         }
     }
 
-    //TODO need to fix -> org.springframework.web.client.RestClientException: Error while extracting response for type
-    // [class [Lcom.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;] and content type [application/json];
-    // nested exception is org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error:
-    // Cannot deserialize value of type `[Lcom.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;`
-    // from Object value (token `JsonToken.START_OBJECT`);
-    // nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException:
-    // Cannot deserialize value of type `[Lcom.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;`
-    // from Object value (token `JsonToken.START_OBJECT`)
-    // at [Source: (PushbackInputStream); line: 1, column: 1]
-    @Disabled
     @Test
-    @Sql("/insert_to_transaction.sql")
+    @SqlGroup({@Sql("/insert_to_account.sql"), @Sql("/insert_to_transaction.sql")})
     @DisplayName("Successful Get Transaction History Test")
     void getTransactionHistory() throws IOException {
-        String expected = "[{\"transactionId\":" + TRANSACTION_ID_IN_DB + ",\"amount\":" + INITIAL_BALANCE +
-                ",\"transactionType\":\"DEBIT\",\"accountId\":" + ACCOUNT_ID_IN_DB + "}]";
-
-        Transaction[] transactions = restTemplate.getForObject("/transactionHistory/{accountId}",
-                Transaction[].class,
-                ACCOUNT_ID_IN_DB);
-
-        assertEquals(expected, json.write(Arrays.asList(transactions)).getJson());
+        Transactions transactions =
+                restTemplate.getForObject("/transactionHistory/{accountId}",
+                        Transactions.class, ACCOUNT_ID_IN_DB);
+        assertThat(json.write(transactions)).isEqualToJson("/expected.json");
     }
 
     // TODO
@@ -105,7 +93,7 @@ class WalletControllerTest {
 
         long accountId = 1005;
         try {
-            restTemplate.getForObject("/transactionHistory/{accountId}", Transaction[].class, accountId);
+            restTemplate.getForObject("/transactionHistory/{accountId}", Transactions.class, accountId);
         } catch (Exception exception) {
 
         }

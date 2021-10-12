@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * A bean to access transaciton table
+ * A bean to access transaction table
  *
  * @author mintesnotbefekadu
  */
@@ -16,7 +16,7 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     /**
-     * A method to access transaction table with accountid instead of transaaction
+     * A method to access transaction table with account id instead of transaction
      * id. Please note transaction id is the id of the table. That is why this
      * method needed.
      *

@@ -1,15 +1,14 @@
 package com.mintesnotbefekadu.simplewalletmicroservice.repository;
 
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
+import com.mintesnotbefekadu.simplewalletmicroservice.model.Transactions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,8 +34,10 @@ class TransactionRepositoryTest {
         transactionRepository.save(transaction);
         transactionRepository.save(transaction2);
         //when
-        List<Transaction> transactionListActual = transactionRepository.findByAccountId(1001L);
-        List<Transaction> transactionListExpected = Arrays.asList(transaction,transaction2);
+        Transactions transactionListActual =
+                new Transactions(transactionRepository.findByAccountId(1001L));
+        Transactions transactionListExpected = new Transactions();
+        transactionListExpected.setTransactions(Arrays.asList(transaction, transaction2));
         //then
         assertThat(transactionListActual).usingRecursiveComparison().
                 isEqualTo(transactionListExpected);
@@ -53,8 +54,10 @@ class TransactionRepositoryTest {
         transactionRepository.save(transaction);
         transactionRepository.save(transaction2);
         //when
-        List<Transaction> transactionListActual = transactionRepository.findByAccountId(1002L);
-        List<Transaction> transactionListExpected = Arrays.asList(transaction,transaction2);
+        Transactions transactionListActual =
+                new Transactions(transactionRepository.findByAccountId(1002L));
+        Transactions transactionListExpected = new Transactions();
+        transactionListExpected.setTransactions(Arrays.asList(transaction, transaction2));
         //then
         assertThat(transactionListActual).usingRecursiveComparison()
                 .isNotEqualTo(transactionListExpected);
