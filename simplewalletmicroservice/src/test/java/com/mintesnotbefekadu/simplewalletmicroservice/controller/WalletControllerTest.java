@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transactions;
-import org.junit.jupiter.api.*;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,14 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.io.IOException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
 
 //@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -86,25 +86,23 @@ class WalletControllerTest {
         assertThat(json.write(transactions)).isEqualToJson("/expected.json");
     }
 
-    // TODO
     @Test
     @DisplayName("Get Balance Test when the account is not found")
     void getTransactionHistory_accountNotFound() {
 
         long accountId = 1005;
-        try {
-            restTemplate.getForObject("/transactionHistory/{accountId}", Transactions.class, accountId);
-        } catch (Exception exception) {
+        ResponseEntity<String> responseEntity =
+                restTemplate.getForEntity("/transactionHistory/" + accountId, String.class);
 
-        }
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND);
+        assertTrue(responseEntity.getBody().contains("Account not found"));
     }
 
     @Test
     @DisplayName("Successful save account")
     void saveAccount() {
-        Account account = new Account(1L,0.0);
+        Account account = new Account(1L, 0.0);
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity("/account", account, Long.class);
-
         // Auto Generated Id
         assertEquals(1, responseEntity.getBody());
     }

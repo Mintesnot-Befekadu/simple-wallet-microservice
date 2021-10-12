@@ -40,9 +40,9 @@ public class WalletController {
      * @return list of transaction done by this player account id
      */
     @GetMapping("/transactionHistory/{accountId}")
-    @ResponseBody
-    public Transactions getTransactionHistory(@PathVariable("accountId") Long accountId) {
-        return walletService.getTransactionHistory(accountId);
+    public ResponseEntity<Transactions> getTransactionHistory(@PathVariable("accountId") Long accountId) {
+        Transactions transactions = walletService.getTransactionHistory(accountId);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
     /**
