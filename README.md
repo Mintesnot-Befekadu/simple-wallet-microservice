@@ -52,4 +52,4 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 ## API Endpoint
 Testing Simple wallet microservice.postman_collection.json
 
-\* test are work in progress
+\* marked unit tests are work in progress
