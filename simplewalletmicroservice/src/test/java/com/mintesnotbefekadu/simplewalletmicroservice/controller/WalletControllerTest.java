@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class WalletControllerTest {
+public class WalletControllerTest {
 
     private final long ACCOUNT_ID_IN_DB = 1001;
     private final double INITIAL_BALANCE = 200.0;

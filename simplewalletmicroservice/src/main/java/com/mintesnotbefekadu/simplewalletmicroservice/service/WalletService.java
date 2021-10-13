@@ -65,6 +65,7 @@ public class WalletService {
      * @param accountId The account id of the player
      * @return transaction object which in turn will be response body
      */
+    @Transactional(readOnly = true)
     public Transactions getTransactionHistory(Long accountId) throws AccountNotFoundException {
         if (accountRepository.existsById(accountId)) {
             return new Transactions(transactionRepository.findByAccountId(accountId));
@@ -79,7 +80,8 @@ public class WalletService {
      * @param transactionId Unique identifier of the transaction
      * @return the status of the transaction with this specific transaction id
      */
-    private boolean checkTransactionId(Long transactionId) {
+    @Transactional(readOnly = true)
+    public boolean checkTransactionId(Long transactionId) {
         return transactionRepository.findById(transactionId).isPresent();
     }
 
@@ -87,11 +89,12 @@ public class WalletService {
      * Check available balance of the account
      *
      * @param accountId  The account id of the player
-     * @param newBalance The updated balance the new balance
+     * @param amount The debit transaction amount
      * @return the status of the available balance for this specific account id
      */
-    private boolean checkAvailableBalance(Long accountId, Double newBalance) {
-        return getAccountBalance(accountId) < newBalance;
+    @Transactional(readOnly = true)
+    public boolean checkAvailableBalance(Long accountId, Double amount) {
+        return getAccountBalance(accountId) < amount;
     }
 
     /**

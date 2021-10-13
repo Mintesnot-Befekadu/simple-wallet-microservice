@@ -13,7 +13,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-class TransactionRepositoryTest {
+public class TransactionRepositoryTest {
 
     @Autowired
     private TransactionRepository transactionRepository;

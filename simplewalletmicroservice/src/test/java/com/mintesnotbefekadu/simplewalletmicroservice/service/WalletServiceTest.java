@@ -3,6 +3,7 @@ package com.mintesnotbefekadu.simplewalletmicroservice.service;
 import com.mintesnotbefekadu.simplewalletmicroservice.exception.AccountNotFoundException;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
+import com.mintesnotbefekadu.simplewalletmicroservice.model.Transactions;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.AccountRepository;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.TransactionRepository;
 import org.junit.jupiter.api.Disabled;
@@ -14,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -21,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class WalletServiceTest {
+public class WalletServiceTest {
     @InjectMocks
     private WalletService walletService;
 
@@ -54,7 +57,7 @@ class WalletServiceTest {
 
         ArgumentCaptor<Long> accountIdCapture = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<Double> newBalanceCapture = ArgumentCaptor.forClass(Double.class);
-        doThrow(new AccountNotFoundException("Account not found")).when(accountRepository)
+        verify(accountRepository)
                 .findById(accountIdCapture.capture())
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"))
                 .setBalance(newBalanceCapture.capture());
@@ -84,20 +87,41 @@ class WalletServiceTest {
     @Disabled
     @DisplayName("Get transaction history unit Test when the account exist")
     void getTransactionHistoryTest() {
+        Transaction transaction1 = new Transaction(
+                2000, 200.0, "debit", 1001L);
+        Transaction transaction2 = new Transaction(
+                2001, 200.0, "debit", 1001L);
+
+
+        List<Transaction> transactionList = Arrays.asList(transaction1, transaction2);
+        Transactions transactions = new Transactions(transactionList);
+
+        when(transactionRepository.findByAccountId(anyLong())).thenReturn(transactionList);
+        assertEquals(walletService.getTransactionHistory(1001L), transactions);
     }
 
-    //TODO
     @Test
-    @Disabled
-    @DisplayName("check transaction id test")
+    @DisplayName("check transaction id test, when the transaction id do not exist")
     void checkTransactionIdTest() {
+        boolean expected = transactionRepository.findById(1002L).isPresent();
+        boolean actual = walletService.checkTransactionId(1002L);
+
+        assertThat(actual).isEqualTo(expected);
     }
 
-    //TODO
     @Test
-    @Disabled
     @DisplayName("check available account balance unit Test when the account exist")
     void checkAvailableBalanceTest() {
+        long accountId = 1003;
+        double balance = 100.0;
+        double amount = 150.0;
+        Account account = new Account(accountId, balance);
+
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
+        boolean expected = walletService.getAccountBalance(accountId) < amount;
+        boolean actual = walletService.checkAvailableBalance(accountId,amount);
+
+        assertThat(actual).isEqualTo(expected);
     }
 
     //TODO not finished
@@ -116,7 +140,7 @@ class WalletServiceTest {
         when(transactionRepository.findById(transactionId)).thenReturn(Optional.empty());
 
         Account account = new Account(accountId, balance);
-        when(accountRepository.findById(accountId)).thenReturn(java.util.Optional.of(account));
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
 
         walletService.makeTransaction(transaction);
     }
