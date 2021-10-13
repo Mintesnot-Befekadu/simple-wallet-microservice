@@ -45,9 +45,9 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 
 ## Out of scope
 1.	Security, authentication and authorization
-2.	currency
+2.	amount currency
 3.	player entity (name and other details)
-4.	Performance and Database concurrency 
+
 
 ## API Endpoint
 Testing Simple wallet microservice.postman_collection.json
