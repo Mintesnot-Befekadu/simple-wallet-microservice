@@ -22,11 +22,11 @@ A simple wallet microservice which do debit/credit, show balance and transaction
 1.2	Negative test for custom repository method find by account id 
 
 ### 2.	WalletServiceTest 
-2.1	check transaction id test *
+2.1	check transaction id test, when the transaction id do not exist 
 2.2	Get transaction history unit Test when the account exist *
 2.3	make transaction method unit Test *
 2.4	Update account balance unit Test when the account exist *
-2.5	check available account balance unit Test when the account exist *
+2.5	check available account balance unit Test when the account exist
 2.6	Save account unit Test when the account exist 
 2.7	Get Balance unit Test when the account exist 
 
