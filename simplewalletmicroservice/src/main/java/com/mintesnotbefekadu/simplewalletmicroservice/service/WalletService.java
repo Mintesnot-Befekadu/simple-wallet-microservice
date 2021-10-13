@@ -33,6 +33,7 @@ public class WalletService {
      * @return Balance of the player
      * @throws AccountNotFoundException if the account is not found
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public double getAccountBalance(Long accountId) throws AccountNotFoundException {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found")).getBalance();
@@ -51,7 +52,7 @@ public class WalletService {
     }
 
     /**
-     * @param account The account id of the player
+     * @param account The account details of the player
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void saveOrUpdateAccount(Account account) {

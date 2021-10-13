@@ -1,12 +1,17 @@
 package com.mintesnotbefekadu.simplewalletmicroservice.service;
 
+import com.mintesnotbefekadu.simplewalletmicroservice.exception.AccountNotFoundException;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.AccountRepository;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.TransactionRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -31,7 +36,7 @@ class WalletServiceTest {
     void getAccountBalanceTest() {
         long accountId = 1003;
         double balance = 100.0;
-        Account account = new Account(accountId,balance);
+        Account account = new Account(accountId, balance);
         when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
         assertEquals(walletService.getAccountBalance(accountId), balance);
     }
@@ -43,16 +48,20 @@ class WalletServiceTest {
     void updateAccountBalanceTest() {
         long accountId = 1003;
         double newBalance = 100.0;
+        Account account = new Account(accountId, newBalance);
+
+        walletService.updateAccountBalance(accountId, newBalance);
 
         ArgumentCaptor<Long> accountIdCapture = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<Double> newBalanceCapture = ArgumentCaptor.forClass(Double.class);
-        doNothing().when(accountRepository).
-                findById(accountIdCapture.capture()).get().setBalance(newBalanceCapture.capture());
-
-        walletService.updateAccountBalance(accountId,newBalance);
+        doThrow(new AccountNotFoundException("Account not found")).when(accountRepository)
+                .findById(accountIdCapture.capture())
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"))
+                .setBalance(newBalanceCapture.capture());
 
         assertEquals(accountId, accountIdCapture.getValue());
         assertEquals(newBalance, newBalanceCapture.getValue());
+
     }
 
     @Test
@@ -61,7 +70,7 @@ class WalletServiceTest {
         // given
         long accountId = 1003;
         double balance = 100.0;
-        Account account = new Account(accountId,balance);
+        Account account = new Account(accountId, balance);
         //when
         walletService.saveOrUpdateAccount(account);
         //then
@@ -106,7 +115,7 @@ class WalletServiceTest {
 
         when(transactionRepository.findById(transactionId)).thenReturn(Optional.empty());
 
-        Account account = new Account(accountId,balance);
+        Account account = new Account(accountId, balance);
         when(accountRepository.findById(accountId)).thenReturn(java.util.Optional.of(account));
 
         walletService.makeTransaction(transaction);
