@@ -3,20 +3,18 @@ package com.mintesnotbefekadu.simplewalletmicroservice.service;
 import com.mintesnotbefekadu.simplewalletmicroservice.exception.AccountNotFoundException;
 import com.mintesnotbefekadu.simplewalletmicroservice.exception.BalanceNotAvailableException;
 import com.mintesnotbefekadu.simplewalletmicroservice.exception.TransactionIdNotUniqueException;
+import com.mintesnotbefekadu.simplewalletmicroservice.exception.TransactionTypeInCorrectException;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Account;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transaction;
 import com.mintesnotbefekadu.simplewalletmicroservice.model.Transactions;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.AccountRepository;
 import com.mintesnotbefekadu.simplewalletmicroservice.repository.TransactionRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -47,6 +45,15 @@ public class WalletServiceTest {
         Account account = new Account(accountId, balance);
         when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
         assertEquals(walletService.getAccountBalance(accountId), balance);
+    }
+
+    @Test
+    @DisplayName("Get Balance unit Test when the account exist")
+    void getAccountBalanceTest_WhenThrowsAccountNotFound() {
+        when(accountRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(AccountNotFoundException.class,
+                () -> walletService.getAccountBalance(1003L));
     }
 
     @Test
@@ -108,6 +115,16 @@ public class WalletServiceTest {
     }
 
     @Test
+    @DisplayName("Get transaction history unit Test when the account exist")
+    void getTransactionHistoryTest_WhenThrowsAccountNotFoundException() {
+        when(accountRepository.existsById(anyLong())).thenReturn(false);
+
+        assertThrows(AccountNotFoundException.class,
+                () -> walletService.getTransactionHistory(1003L));
+    }
+
+
+    @Test
     @DisplayName("check transaction id test, when the transaction id do not exist")
     void checkTransactionIdTest() {
         when(transactionRepository.findById(1002L)).thenReturn(Optional.empty());
@@ -132,11 +149,9 @@ public class WalletServiceTest {
         assertThat(walletService.checkAvailableBalance(accountId, amount)).isFalse();
     }
 
-    //TODO not completed
     @Test
-    @Disabled
-    @DisplayName("make transaction method unit Test")
-    void makeTransactionTest() {
+    @DisplayName("make debit transaction method unit Test")
+    void makeDebitTransactionTest() {
         long transactionId = 2000;
         double amount = 200.0;
         String type = "debit";
@@ -151,7 +166,46 @@ public class WalletServiceTest {
         when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
 
         walletService.makeTransaction(transaction);
+        assertThat(account.getBalance()).isEqualTo(1000.0-200.0);
     }
+
+
+    @Test
+    @DisplayName("make credit transaction method unit Test")
+    void makeCreditTransactionTest() {
+        long transactionId = 2000;
+        double amount = 200.0;
+        String type = "credit";
+        long accountId = 1001;
+        double balance = 1000.0;
+
+        Transaction transaction = new Transaction(transactionId, amount, type, accountId);
+
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.empty());
+
+        Account account = new Account(accountId, balance);
+        when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
+
+        walletService.makeTransaction(transaction);
+        assertThat(account.getBalance()).isEqualTo(1000.0+200.0);
+    }
+
+    @Test
+    @DisplayName("make transaction method unit Test when balance not available")
+    void makeTransactionTest__WhenThrowsTransactionTypeInCorrectException() {
+        long transactionId = 2000;
+        double amount = 1200.0;
+        String type = "notCreditOrDebit";
+        long accountId = 1001;
+
+        Transaction transaction = new Transaction(transactionId, amount, type, accountId);
+
+        assertThrows(TransactionTypeInCorrectException.class, () ->
+                walletService.makeTransaction(transaction));
+    }
+
+
+
 
     @Test
     @DisplayName("make transaction method unit Test when balance not available")
@@ -178,7 +232,6 @@ public class WalletServiceTest {
         double amount = 200.0;
         String type = "debit";
         long accountId = 1001;
-        double balance = 1000.0;
 
         Transaction transaction = new Transaction(transactionId, amount, type, accountId);
 
