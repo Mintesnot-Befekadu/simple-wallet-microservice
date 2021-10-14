@@ -47,8 +47,10 @@ public class WalletService {
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void updateAccountBalance(Long accountId, Double newBalance) {
-        accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException("Account not found"))
-                .setBalance(newBalance);
+        Account account =accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        account.setBalance(newBalance);
+        accountRepository.save(account);
     }
 
     /**
